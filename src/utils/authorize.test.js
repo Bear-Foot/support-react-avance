@@ -3,8 +3,6 @@ import { authorize } from './authorize'
 describe('The authorization function', () => {
   // important given the intent behind the function
   it('should return false if any information is missing', () => {
-    const user = { permissions: ['one', 'two'] }
-
     throw new Error('not implemented')
   })
 

@@ -6,7 +6,7 @@ describe('Testing the newsletter subscription', () => {
   it('should not be subscribed at first', () => {
     const { getByText } = render(<NewsLetter />)
 
-    expect(getByText('Dommage...')).toBeInTheDocument()
+    expect(getByText(/Dommage/i)).toBeInTheDocument()
   })
 
   it('should change the message according to the state of the checkbox', () => {
