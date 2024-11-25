@@ -38,9 +38,7 @@ export const Profile = () => {
   return (
     <div>
       Welcome to your profile
-      {' '}
-      {data.name}
-      {' '}
+      {` ${data.name} `}
       !
     </div>
   )
