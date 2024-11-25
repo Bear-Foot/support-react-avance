@@ -1,0 +1,61 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript"
+  ],
+  "env": {
+    "browser": true,
+    "jest/globals":true
+  },
+  "plugins": [
+    "sort-keys-fix",
+    "jest",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "default-param-last": 0,
+    "semi": [2, "never"],
+    "comma-dangle": [2, "always-multiline"],
+    "no-multiple-empty-lines": 2,
+    "max-len": [2, 120],
+    "indent": [2, 2],
+    "newline-before-return": 2,
+    "no-unused-vars": 0, 
+    "no-nested-ternary": 0,
+    "no-use-before-define": 0,
+
+    "linebreak-style": 0,
+
+    "sort-keys-fix/sort-keys-fix": [2, "asc", { "natural": true }],
+    
+    "import/no-default-export": 2,
+    "import/order": ["error", { "newlines-between": "always"}],
+    "import/prefer-default-export": 0,
+    "import/no-extraneous-dependencies" : ["error", { "devDependencies": true }],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+
+    "react/jsx-filename-extension": [2, { "extensions": [".js", ".tsx", "ts"] }],
+    "react/react-in-jsx-scope": 0,
+    "react/prop-types": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/require-default-props": 0,
+    "react/destructuring-assignment": 0,
+    "react/function-component-definition": 0,
+
+    "@typescript-eslint/no-explicit-any": "off",
+    
+    "no-shadow": "off"
+  }
+}
