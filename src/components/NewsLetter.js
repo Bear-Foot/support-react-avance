@@ -1,5 +1,7 @@
 import { useToggle } from '../hooks/toggle'
 
+import { ExpensiveLoader } from './ExpensiveLoader'
+
 export const NewsLetter = () => {
   const isSubscribed = useToggle()
 
@@ -18,6 +20,7 @@ export const NewsLetter = () => {
       <div>
         {isSubscribed.state ? 'Très bien, vive le spam' : 'Dommage...'}
       </div>
+      <ExpensiveLoader />
     </div>
   )
 }
