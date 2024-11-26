@@ -8,6 +8,7 @@ const messagesFr = {
   homeLinkLabel: 'Home depuis sidebar {test}',
   linkHome: 'Home',
   linkNL: 'News letter',
+  linkPerf: 'Perf',
   linkProfile: 'Pro file',
 }
 

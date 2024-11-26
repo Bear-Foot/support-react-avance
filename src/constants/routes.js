@@ -12,6 +12,11 @@ const routesTmp = {
     path: 'newsletter',
     tradId: 'linkNL',
   },
+  perf: {
+    componentLoader: () => import('../components/Perf'),
+    path: '/perf',
+    tradId: 'linkPerf',
+  },
   profile: {
     componentLoader: () => import('../components/Profile'),
     path: '/profile',

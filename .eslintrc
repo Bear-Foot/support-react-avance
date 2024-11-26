@@ -32,7 +32,6 @@
 
     "sort-keys-fix/sort-keys-fix": [2, "asc", { "natural": true }],
     
-    "import/no-default-export": 2,
     "import/order": ["error", { "newlines-between": "always"}],
     "import/prefer-default-export": 0,
     "import/no-extraneous-dependencies" : ["error", { "devDependencies": true }],
