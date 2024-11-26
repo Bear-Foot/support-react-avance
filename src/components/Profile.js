@@ -55,3 +55,5 @@ export const Profile = UserFetcher(({ requestState, data }) => {
     </div>
   )
 })
+
+export default Profile

@@ -1,19 +1,32 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import { FormattedMessage } from 'react-intl'
 
 import { routesAsArray } from '../constants/routes'
+import { useSetLocale } from '../intl/IntlContext'
 
-export const SideBar = () => (
-  <Wrapper>
-    {routesAsArray.map((route) => (
-      <Link to={route.path} key={route.path}>
-        <LinkWrapper>
-          {route.text}
-        </LinkWrapper>
-      </Link>
-    ))}
-  </Wrapper>
-)
+export const SideBar = () => {
+  const toggleLocale = useSetLocale()
+
+  return (
+    <Wrapper>
+      {routesAsArray.map((route) => (
+        <Link to={route.path} key={route.path}>
+          <LinkWrapper>
+            <FormattedMessage id={route.tradId} values={{ test: 5 }} />
+          </LinkWrapper>
+        </Link>
+      ))}
+      <ChangeLocale onClick={toggleLocale}>Change language</ChangeLocale>
+    </Wrapper>
+  )
+}
+
+const ChangeLocale = styled.button`
+  position: absolute;
+  bottom: 0px;
+  height: 50px;
+`
 
 const LinkWrapper = styled.div`
   display: flex;

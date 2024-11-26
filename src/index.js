@@ -4,8 +4,9 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { App } from './App'
 import { reportWebVitals } from './reportWebVitals'
-import './index.css'
 import { worker } from './fakeBackend/worker'
+import { IntlWrapper } from './intl/IntlContext'
+import './index.css'
 
 worker.start()
 
@@ -13,7 +14,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <IntlWrapper>
+        <App />
+      </IntlWrapper>
     </BrowserRouter>
   </React.StrictMode>,
 )

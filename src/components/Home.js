@@ -17,10 +17,13 @@ const Count = ({ stateHook, label }) => {
   )
 }
 
-export const Home = () => (
+const Home = () => (
   <div>
     <Count stateHook={storingLoggingHook1} label="loggedStore" />
     <Count stateHook={useLoggedState} label="logged" />
     <Count stateHook={storingHook1} label="storing" />
   </div>
 )
+
+// eslint-disable-next-line import/no-default-export
+export default Home
