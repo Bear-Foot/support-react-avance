@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { getConnectedUser } from '../requests/user'
 
-export const Profile = () => {
+const useUserFetch = () => {
   const [requestState, setRequestState] = useState('loading')
   const [data, setData] = useState()
 
   useEffect(() => {
     const getUser = async () => {
-      const requestResponse = await getConnectedUser()
+      const requestResponse = await getConnectedUser('wil')
       if (requestResponse.status < 500) {
         const result = await requestResponse.json()
 
@@ -24,6 +24,18 @@ export const Profile = () => {
     getUser()
   }, [])
 
+  return {
+    data, requestState,
+  }
+}
+
+const UserFetcher = (Wrapped) => (props) => {
+  const { requestState, data } = useUserFetch()
+
+  return <Wrapped requestState={requestState} data={data} {...props} />
+}
+
+export const Profile = UserFetcher(({ requestState, data }) => {
   if (requestState === 'loading') {
     return 'Chargement...'
   }
@@ -42,4 +54,4 @@ export const Profile = () => {
       !
     </div>
   )
-}
+})

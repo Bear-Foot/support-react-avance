@@ -11,24 +11,30 @@ const sleep = (ms = 500) => new Promise((res) => {
   setTimeout(res, ms)
 })
 
+const handlers = {
+  success: async (req, res, ctx) => {
+    await sleep(500)
+
+    return res(ctx.json({ name: 'Jean-Daniel' }))
+  }
+}
+
 describe('The profile page with its http request', () => {
   it('should display a message while loading', async () => {
+    const spy = jest.spyOn(handlers, 'success')
     // mock setup
     server.use(
-      rest.get(
+      rest.post(
         'https://api.com/me',
-        async (req, res, ctx) => {
-          await sleep(500)
-
-          return res(ctx.json({ name: 'Jean-Daniel' }))
-        },
+        handlers.success,
         { once: true },
       ),
     )
-
     const { getByText, findByText } = render(<Profile />)
 
     expect(getByText(/Chargement/)).toBeInTheDocument()
     await findByText(/Jean-Daniel/)
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy.mock.lastCall[0].body).toBe("wil")
   })
 })
