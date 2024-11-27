@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 // The initial state should be false if not provided
 // The reset function should set the state to what it has been initialized with
@@ -10,10 +10,10 @@ import { useState } from 'react'
 export const useToggle = (initialState = false) => {
   const [truthiness, setTruthiness] = useState(initialState)
 
-  const setOn = () => setTruthiness(true)
-  const setOff = () => setTruthiness(false)
-  const toggle = () => setTruthiness((state) => !state)
-  const reset = () => setTruthiness(initialState)
+  const setOn = useRef(() => setTruthiness(true)).current
+  const setOff = useRef(() => setTruthiness(false)).current
+  const toggle = useRef(() => setTruthiness((state) => !state)).current
+  const reset = useRef(() => setTruthiness(initialState)).current
 
   return {
     reset,

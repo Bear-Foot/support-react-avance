@@ -1,37 +1,66 @@
 import styled from 'styled-components'
-import { useState } from 'react'
+import {
+  forwardRef, Suspense, useCallback, useEffect, useMemo, useRef, useState,
+} from 'react'
 
 import { mockCrypto } from '../fakeBackend/mocks/crypto'
+import { useToggle } from '../hooks/toggle'
 
 import { Crypto } from './Perf/Crypto'
+
+const createFilter = (key) => (value) => (obj) => obj[key].indexOf(value) > -1
+const nameFiltering = createFilter('name')
+
+const idFiltering = createFilter('id')
+
+const myIdFiltering = idFiltering('45345241412412')
 
 export const Perf = () => {
   const [nameFilter, setNameFilter] = useState('')
   const [sort, setSort] = useState(false)
+  const uppercaseToggle = useToggle(false)
+  const handleNameFilter = useCallback((e) => setNameFilter(uppercaseToggle.state
+    ? e.target.value.toUpperCase() : e.target.value), [uppercaseToggle.state])
+  const nameFilterWithValue = nameFiltering(nameFilter)
+  const handleNameFilterChange = useCallback((e) => setSort(e.target.checked))
 
-  const filteredCryptos = mockCrypto.filter((crypto) => crypto.name.indexOf(nameFilter) > -1)
+  const filteredCryptos = mockCrypto.filter(nameFilterWithValue)
   const sortedCryptos = sort ? filteredCryptos.sort((a, b) => a.name > b.name) : filteredCryptos
 
   return (
     <Wrapper>
       <FiltersWrapper>
-        <TextFilter name="Name" value={nameFilter} onChange={setNameFilter} />
+        <TextFilter name="Name" value={nameFilter} onChange={handleNameFilter} />
         <label htmlFor="sort">
           Sort by name
-          <input type="checkbox" id="sort" name="sort" checked={sort} onChange={(e) => setSort(e.target.checked)} />
+          <input type="checkbox" id="sort" name="sort" checked={sort} onChange={handleNameFilterChange} />
+        </label>
+        <label htmlFor="uppercase">
+          uppercase ?
+          <input
+            type="checkbox"
+            id="uppercase"
+            name="uppercase"
+            checked={uppercaseToggle.state}
+            onChange={uppercaseToggle.toggle}
+          />
         </label>
       </FiltersWrapper>
-      <CryptoList>
-        {sortedCryptos.map((crypto) => <Crypto crypto={crypto} key={crypto.id} />)}
-      </CryptoList>
+      <Suspense fallback="Mouic mouic">
+        <CryptoList>
+          {sortedCryptos.map((crypto) => <Crypto crypto={crypto} key={crypto.id} />)}
+        </CryptoList>
+      </Suspense>
     </Wrapper>
   )
 }
 
-const TextFilter = ({ value, onChange, name }) => (
+const TextFilter = ({
+  value, onChange, name,
+}) => (
   <FilterLabel htmlFor={name}>
     <div>{name}</div>
-    <FilterInput value={value} id={name} name={name} onChange={(e) => onChange(e.target.value)} />
+    <FilterInput value={value} id={name} name={name} onChange={onChange} />
   </FilterLabel>
 )
 
