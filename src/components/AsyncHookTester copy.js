@@ -12,7 +12,7 @@ export const AsyncHookTesterLeRetour = () => {
       <button
         type="button"
         onClick={() => {
-          userRequest.run('Truc')
+          userRequest.run('Truc').then(() => 'nanana')
           setHasClicked(true)
         }}
       >
