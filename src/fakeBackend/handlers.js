@@ -2,20 +2,20 @@ import { rest } from 'msw'
 
 export const handlers = [
   rest.post('https://api.com/me', (req, res, ctx) => res(
-    ctx.status(400),
-    ctx.json({ message: 'Alerte bleue' }),
-    // ctx.json({
-    //   id: 0,
-    //   name: 'Wilfried',
-    // }),
+    // ctx.status(400),
+    // ctx.json({ message: 'Alerte bleue' }),
+    ctx.json({
+      id: 0,
+      name: 'Wilfried',
+    }),
   )),
   rest.post('https://api.com/ti', (req, res, ctx) => res(
-    ctx.status(400),
-    ctx.json({ message: 'Alerte rouge' }),
-    // ctx.json({
-    //   id: 1,
-    //   name: 'Jean-Claude Vandame',
-    // }),
+    // ctx.status(400),
+    // ctx.json({ message: 'Alerte rouge' }),
+    ctx.json({
+      id: 1,
+      name: 'Jean-Claude Vandame',
+    }),
   )),
 
   rest.post('https://api.com/user', async (req, res, ctx) => {

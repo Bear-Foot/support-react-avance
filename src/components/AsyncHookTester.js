@@ -4,10 +4,7 @@ import { useAsync } from '../hooks/async2'
 export const AsyncHookTester = () => {
   const userRequest = useAsync({
     asyncFn: getConnectedUser,
-    callback: async (runned) => {
-      await runned
-      console.log(runned)
-    },
+
     start: true,
   })
 
