@@ -4,19 +4,16 @@ import {
 import { render } from '@testing-library/react'
 
 import { server } from '../testMocks/server'
+import { sleep } from '../utils/tools'
 
 import { Profile } from './Profile'
-
-const sleep = (ms = 500) => new Promise((res) => {
-  setTimeout(res, ms)
-})
 
 const handlers = {
   success: async (req, res, ctx) => {
     await sleep(500)
 
     return res(ctx.json({ name: 'Jean-Daniel' }))
-  }
+  },
 }
 
 describe('The profile page with its http request', () => {
@@ -34,7 +31,7 @@ describe('The profile page with its http request', () => {
 
     expect(getByText(/Chargement/)).toBeInTheDocument()
     await findByText(/Jean-Daniel/)
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy.mock.lastCall[0].body).toBe("wil")
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy.mock.lastCall[0].body).toBe('wil')
   })
 })
