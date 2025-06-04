@@ -1,46 +1,38 @@
 import styled from 'styled-components'
 import {
-  Suspense, useCallback, useState,
+  useCallback, useDeferredValue, useEffect, useState,
 } from 'react'
-import { shallowEqual } from 'react-intl/src/utils'
 
 import { mockCrypto } from '../fakeBackend/mocks/crypto'
 
 import { Crypto } from './Perf/Crypto'
 
-const customMemo = (evaluator, deps) => {
-  if (shallowEqual(customMemo.deps, deps)) {
-    return customMemo.previousResult
-  }
-  const result = evaluator()
-  customMemo.previousResult = result
-  customMemo.deps = deps
+const Spy = () => {
+  useEffect(() => {
+    console.log('Spy up')
 
-  return result
-}
+    return () => {
+      console.log('Spy down')
+    }
+  }, [])
 
-const customCallback = (callback, deps) => {
-  if (shallowEqual(customCallback.deps, deps)) {
-    return customCallback.storedCallback
-  }
-
-  customCallback.storedCallback = callback
-  customCallback.deps = deps
-
-  return callback
+  return 5
 }
 
 export const Perf = () => {
   const [nameFilter, setNameFilter] = useState('')
   const [sort, setSort] = useState(false)
-  const handleNameFilter = (e) => setNameFilter(e.target.value)
+
+  const handleNameFilter = useCallback((e) => setNameFilter(e.target.value), [])
   const handleNameFilterChange = useCallback((e) => setSort(e.target.checked))
 
-  const filteredCryptos = mockCrypto.filter((c) => c.name.indexOf(nameFilter) > -1)
+  const filteredCryptos = mockCrypto.filter((c) => c.name.toUpperCase().indexOf(nameFilter.toUpperCase()) > -1)
   const sortedCryptos = sort ? filteredCryptos.sort((a, b) => a.name > b.name) : filteredCryptos
+  const sortedCryptosDeferred = useDeferredValue(sortedCryptos)
 
   return (
     <Wrapper>
+      <Spy key={sort} />
       <FiltersWrapper>
         <TextFilter name="Name" value={nameFilter} onChange={handleNameFilter} />
         <label htmlFor="sort">
@@ -48,11 +40,9 @@ export const Perf = () => {
           <input type="checkbox" id="sort" name="sort" checked={sort} onChange={handleNameFilterChange} />
         </label>
       </FiltersWrapper>
-      <Suspense fallback="Mouic mouic">
-        <CryptoList>
-          {sortedCryptos.map((crypto) => <Crypto crypto={crypto} />)}
-        </CryptoList>
-      </Suspense>
+      <CryptoList>
+        {sortedCryptosDeferred.map((crypto) => <Crypto crypto={crypto} key={crypto.id} handleNameFilter={handleNameFilter} />)}
+      </CryptoList>
     </Wrapper>
   )
 }

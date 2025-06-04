@@ -12,6 +12,7 @@ const messagesFr = {
   linkNL: 'News letter',
   linkPerf: 'Perf',
   linkProfile: 'Pro file',
+  linkQuery: 'Query',
 }
 
 export const t = mapValues(messagesFr, (_, key) => key)

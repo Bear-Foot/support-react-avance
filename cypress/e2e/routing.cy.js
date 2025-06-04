@@ -4,13 +4,13 @@ describe('Routing', () => {
   it('Testing the routing', () => {
     cy.visit(urlBuilder())
     cy.contains('Home').should('be.visible')
-    cy.contains('News Letter').should('be.visible')
-    cy.contains('Profile').should('be.visible')
+    cy.contains('News letter').should('be.visible')
+    cy.contains('Pro file').should('be.visible')
 
-    cy.contains('News Letter').click()
+    cy.contains('News letter').click()
     cy.contains('Abonnez').should('be.visible')
 
-    cy.contains('Profile').click()
+    cy.contains('Pro file').click()
     cy.contains('Welcome').should('be.visible')
     cy.contains('Wilfried').should('be.visible')
   })

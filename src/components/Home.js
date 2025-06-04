@@ -1,96 +1,103 @@
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect, useMemo, useRef, useState,
+  memo, useCallback, useEffect, useRef, useState,
 } from 'react'
-import { shallowEqual } from 'react-intl/src/utils'
 
-import { Counter, useCounterSetters, useCountValue } from '../context/Counter'
+const createIncrease = (setter) => () => setter((v) => v + 1)
+
+export const storingState = (key) => (wrapped) => (initialState) => {
+  const existingStorage = localStorage.getItem(key)
+  const parsed = JSON.parse(existingStorage)
+  const [state, setState] = wrapped(parsed || initialState)
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(state))
+  }, [state])
+
+  return [state, setState]
+}
+
+export const loggingState = (wrapped) => (initialState, ...rest) => {
+  const [state, setState] = wrapped(initialState, ...rest)
+
+  useEffect(() => {
+    console.log(state)
+  }, [state])
+
+  return [state, setState]
+}
+
+const limiter = (limit) => (wrapped) => (initialState) => {
+  const [state, setState] = wrapped(initialState)
+
+  const limiterState = useRef(((newState) => {
+    if (newState.length < 4) {
+      setState(newState)
+    }
+  })).current
+
+  return [state, limiterState]
+}
+
+const compose = (...composed) => (wrapped) => composed.reduce((previous, composer) => composer(previous), wrapped)
+
+const storingLoggingState = compose(
+  loggingState,
+  limiter(3),
+  storingState({ key: 'Homepage' }),
+)(useState)
+
+const addLogger = (name, propsToLog) => (Wrapped) => (props) => {
+  useEffect(() => {
+    const info = propsToLog ? propsToLog(props) : ''
+    console.log(`${name} up:${info}`)
+
+    return () => {
+      console.log(`${name} down:${info}`)
+    }
+  }, [])
+
+  return <Wrapped {...props} />
+}
+
+const Fruit = ({ name }) => <div>{name}</div>
+const LoggedFruit = compose(
+  addLogger('fruit'),
+  memo,
+)(Fruit)
+
+const list = ['Banane', 'Pêche', 'Melon']
 
 const Home = () => {
-  const [state, setState] = useState(10)
-  const [shouldFilterOdds, setShouldFilterOdds] = useState(false)
-  const increaseCount = () => {
-    setState((oldState) => oldState + 1)
-  }
-  const testResult = customMemoAdvanced(() => {
-    console.log('expensive compute', state)
+  const [fruits, setFruits] = useState(list)
+  const removeFirst = () => setFruits((f) => {
+    f.shift()
 
-    return 5
-  }, [state])
+    return [...f]
+  })
+  const prepend = () => setFruits((f) => {
+    f.unshift('Fraise')
+
+    return [...f]
+  })
 
   return (
     <div>
-      <button type="button" onClick={increaseCount}>
-        Hello
-        {' '}
-        {state}
+      {fruits.map((f) => <LoggedFruit name={f} key={f} />)}
+      <button onClick={removeFirst}>
+        Petit texte
       </button>
-      <button type="button" onClick={() => setState(10)}>
-        reset
+      <button onClick={prepend}>
+        PLUS DE FRAISES
       </button>
-      <Counter>
-        <Parent />
-      </Counter>
     </div>
   )
 }
+
+const Child = memo(({ increase }) => {
+  console.log('render child')
+
+  return <div onClick={increase}>rien</div>
+})
 
 // eslint-disable-next-line import/no-default-export
 export default Home
-
-const Parent = () => {
-  const counterSetters = useCounterSetters()
-  console.log('parent rendu')
-
-  return (
-    <div>
-      <button onClick={counterSetters.decrease}>
-        decrease
-      </button>
-      <button onClick={counterSetters.increase}>
-        increase
-      </button>
-      <button onClick={counterSetters.reset}>
-        reset
-      </button>
-      <Child />
-    </div>
-  )
-}
-const Child = () => {
-  const count = useCountValue()
-
-  return (
-    <div>
-      {count}
-    </div>
-  )
-}
-const customMemo = (fn, deps) => {
-  if (shallowEqual(deps, customMemo.lastCalledWith)) {
-    return customMemo.previousResult
-  }
-
-  customMemo.lastCalledWith = deps
-  const result = fn()
-  customMemo.previousResult = result
-
-  return result
-}
-
-const customMemoAdvanced = (fn, deps) => {
-  const key = deps.join('##$$')
-  if (customMemoAdvanced.calledWith[key]) {
-    return customMemoAdvanced.results[key]
-  }
-
-  customMemoAdvanced.calledWith[key] = true
-  const result = fn()
-  customMemoAdvanced.results[key] = result
-
-  return result
-}
-customMemoAdvanced.calledWith = {}
-customMemoAdvanced.results = {}

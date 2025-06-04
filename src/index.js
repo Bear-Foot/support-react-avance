@@ -6,19 +6,31 @@ import { App } from './App'
 import { reportWebVitals } from './reportWebVitals'
 import { worker } from './fakeBackend/worker'
 import { IntlWrapper } from './intl/IntlContext'
+
 import './index.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 worker.start()
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5,
+    },
+  },
+})
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <IntlWrapper>
         <App />
       </IntlWrapper>
     </BrowserRouter>
-  </React.StrictMode>,
+  </QueryClientProvider>,
+  // </React.StrictMode>,
 )
 
 // If you want to start measuring performance in your app, pass a function

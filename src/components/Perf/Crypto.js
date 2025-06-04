@@ -1,8 +1,13 @@
+import { memo } from 'react'
 import styled from 'styled-components'
 
 function CryptoComponent({ crypto }) {
   const highestValue = Math.max(...crypto.values)
   const lowestValue = Math.min(...crypto.values)
+
+  for (let index = 0; index < 1000000; index++) {
+
+  }
 
   return (
     <Wrapper>
@@ -27,7 +32,7 @@ function CryptoComponent({ crypto }) {
   )
 }
 
-export const Crypto = CryptoComponent
+export const Crypto = memo(CryptoComponent)
 
 const ValueBar = ({
   crypto, value, highestValue, lowestValue,

@@ -1,7 +1,13 @@
-export const getConnectedUser = (data) => fetch('https://api.com/me', {
-  body: data,
-  method: 'POST',
-})
+import { sleep } from '../utils/tools'
+
+export const getConnectedUser = (data) => {
+  console.log('data', data)
+
+  return customFetch('https://api.com/me', {
+    body: data,
+    method: 'POST',
+  })
+}
 
 export const createUser = ({ firstName, lastName }) => fetch('https://api.com/user', {
   body: JSON.stringify({ firstName, lastName }),
@@ -15,7 +21,7 @@ export const getJCVD = (data) => fetch('https://api.com/ti', {
 
 const customFetch = async (...params) => {
   const result = await fetch(...params)
-
+  await sleep(2000)
   if (result.status >= 500) {
     throw new Error('network error')
   }

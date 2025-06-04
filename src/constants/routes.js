@@ -22,6 +22,11 @@ const routesTmp = {
     path: '/profile',
     tradId: 'linkProfile',
   },
+  query: {
+    componentLoader: () => import('../components/Query'),
+    path: '/query',
+    tradId: 'linkQuery',
+  },
 }
 
 const routes = mapValues(routesTmp, (route) => {
@@ -39,4 +44,5 @@ const routes = mapValues(routesTmp, (route) => {
     component: CompLoader,
   }
 })
+
 export const routesAsArray = map(routes)

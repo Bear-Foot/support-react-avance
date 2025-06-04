@@ -1,5 +1,7 @@
 import { useToggle } from '../hooks/toggle'
 
+console.log('NewsLetter loaded')
+
 export const NewsLetter = () => {
   const isSubscribed = useToggle()
 
