@@ -1,30 +1,42 @@
 import styled from 'styled-components'
 import {
-  forwardRef, Suspense, useCallback, useEffect, useMemo, useRef, useState,
+  Suspense, useCallback, useState,
 } from 'react'
+import { shallowEqual } from 'react-intl/src/utils'
 
 import { mockCrypto } from '../fakeBackend/mocks/crypto'
-import { useToggle } from '../hooks/toggle'
 
 import { Crypto } from './Perf/Crypto'
 
-const createFilter = (key) => (value) => (obj) => obj[key].indexOf(value) > -1
-const nameFiltering = createFilter('name')
+const customMemo = (evaluator, deps) => {
+  if (shallowEqual(customMemo.deps, deps)) {
+    return customMemo.previousResult
+  }
+  const result = evaluator()
+  customMemo.previousResult = result
+  customMemo.deps = deps
 
-const idFiltering = createFilter('id')
+  return result
+}
 
-const myIdFiltering = idFiltering('45345241412412')
+const customCallback = (callback, deps) => {
+  if (shallowEqual(customCallback.deps, deps)) {
+    return customCallback.storedCallback
+  }
+
+  customCallback.storedCallback = callback
+  customCallback.deps = deps
+
+  return callback
+}
 
 export const Perf = () => {
   const [nameFilter, setNameFilter] = useState('')
   const [sort, setSort] = useState(false)
-  const uppercaseToggle = useToggle(false)
-  const handleNameFilter = useCallback((e) => setNameFilter(uppercaseToggle.state
-    ? e.target.value.toUpperCase() : e.target.value), [uppercaseToggle.state])
-  const nameFilterWithValue = nameFiltering(nameFilter)
+  const handleNameFilter = (e) => setNameFilter(e.target.value)
   const handleNameFilterChange = useCallback((e) => setSort(e.target.checked))
 
-  const filteredCryptos = mockCrypto.filter(nameFilterWithValue)
+  const filteredCryptos = mockCrypto.filter((c) => c.name.indexOf(nameFilter) > -1)
   const sortedCryptos = sort ? filteredCryptos.sort((a, b) => a.name > b.name) : filteredCryptos
 
   return (
@@ -35,20 +47,10 @@ export const Perf = () => {
           Sort by name
           <input type="checkbox" id="sort" name="sort" checked={sort} onChange={handleNameFilterChange} />
         </label>
-        <label htmlFor="uppercase">
-          uppercase ?
-          <input
-            type="checkbox"
-            id="uppercase"
-            name="uppercase"
-            checked={uppercaseToggle.state}
-            onChange={uppercaseToggle.toggle}
-          />
-        </label>
       </FiltersWrapper>
       <Suspense fallback="Mouic mouic">
         <CryptoList>
-          {sortedCryptos.map((crypto) => <Crypto crypto={crypto} key={crypto.id} />)}
+          {sortedCryptos.map((crypto) => <Crypto crypto={crypto} />)}
         </CryptoList>
       </Suspense>
     </Wrapper>

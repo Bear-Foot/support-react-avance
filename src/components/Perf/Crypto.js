@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import styled from 'styled-components'
 
 function CryptoComponent({ crypto }) {
@@ -28,7 +27,7 @@ function CryptoComponent({ crypto }) {
   )
 }
 
-export const Crypto = memo(CryptoComponent)
+export const Crypto = CryptoComponent
 
 const ValueBar = ({
   crypto, value, highestValue, lowestValue,
